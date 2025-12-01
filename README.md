@@ -1,20 +1,20 @@
-# EXPERIMENT-03-INTERFACING-DIGITAL-SENSOR-WITH-EDGE-DEVELOPMENT-BOARD-
- 
----
-
-### **NAME:**  
-### **DEPARTMENT:**  
-### **ROLL NO:**  
-### **DATE OF EXPERIMENT:**  
+# EXPERIMENT 03: INTERFACING DIGITAL SENSOR WITH EDGE DEVELOPMENT BOARD  
 
 ---
 
-## **AIM:**  
-To interface a **DHT22 temperature and humidity sensor** with the **Raspberry Pi Pico** and display the sensor readings using MicroPython.
+### **NAME:** Vishal S
+### **DEPARTMENT:** B.E. CSE (IoT)  
+### **ROLL NO:** 212223110063
+### **DATE OF EXPERIMENT:** 
 
 ---
 
-## **APPARATUS REQUIRED:**  
+## **AIM**  
+To interface a **DHT22 Temperature and Humidity Sensor** with the **Raspberry Pi Pico** and display the sensor readings using **MicroPython**.  
+
+---
+
+## **APPARATUS REQUIRED**  
 1. Raspberry Pi Pico  
 2. DHT22 Temperature & Humidity Sensor  
 3. 10kΩ Pull-up Resistor (if required)  
@@ -25,61 +25,89 @@ To interface a **DHT22 temperature and humidity sensor** with the **Raspberry Pi
 
 ---
 
-## **THEORY:**  
-### **About Raspberry Pi Pico:**  
-Raspberry Pi Pico is a microcontroller board based on the **RP2040 chip**. It features:  
+## **THEORY**  
+
+### **Raspberry Pi Pico**  
+Raspberry Pi Pico is a **microcontroller board** based on the **RP2040 chip**.  
+
 - Dual-core ARM Cortex-M0+ processor  
 - 26 multi-function GPIO pins  
 - Supports **MicroPython** and **C/C++**  
-- Interfaces like **I2C, SPI, UART, and PWM**  
-- Low power consumption, ideal for **IoT applications**  
+- Interfaces: **I2C, SPI, UART, PWM**  
+- Low power consumption → ideal for **IoT applications**  
 
-### **About DHT22 Sensor:**  
-The **DHT22** is a **temperature and humidity sensor** with a digital output. It has:  
-- Operating Voltage: **3.3V – 5V**  
-- Temperature Range: **-40°C to 80°C (±0.5°C accuracy)**  
-- Humidity Range: **0% – 100% (±2-5% accuracy)**  
-- **Data format**: Uses **single-wire communication protocol**  
+### **DHT22 Sensor**  
+The **DHT22** is a digital **temperature & humidity sensor** with the following features:  
 
-The sensor measures **temperature using a thermistor** and **humidity using a capacitive sensor**. The **MicroPython dht library** processes the raw data.
+- **Operating Voltage:** 3.3V – 5V  
+- **Temperature Range:** -40°C to 80°C (±0.5°C accuracy)  
+- **Humidity Range:** 0% – 100% (±2–5% accuracy)  
+- **Data Format:** Single-wire communication protocol  
 
----
-
-## **WORKING PRINCIPLE:**  
-1. The **DHT22 sensor** is connected to the **Raspberry Pi Pico**.  
-2. The **Pico reads temperature and humidity values** from the sensor via a single-wire communication protocol.  
-3. The data is **processed and displayed on the serial monitor**.  
-4. If **temperature or humidity crosses a threshold**, an LED can **flash as an alert**.  
+**Working Principle:**  
+- Temperature → measured using a **thermistor**  
+- Humidity → measured using a **capacitive sensor**  
+- Data → transmitted digitally and decoded by the **MicroPython `dht` library**  
 
 ---
 
-## **CIRCUIT DIAGRAM:**  
+## **WORKING PRINCIPLE**  
+1. Connect the **DHT22 sensor** to the **Raspberry Pi Pico**.  
+2. Pico reads **temperature and humidity values** via a single-wire protocol.  
+3. Data is **processed and displayed** on the serial monitor.  
+4. If values **cross threshold limits**, an **LED alert** can be triggered.  
+
+---
+
+## **CIRCUIT DIAGRAM**  
+<img width="667" height="520" alt="image" src="https://github.com/user-attachments/assets/32c6b5a7-5be5-4b2f-bc77-0078d127b84e" />
+
 ### **Connections:**  
 
-| DHT22 Pin | Raspberry Pi Pico Pin |
-|-----------|----------------------|
-| VCC (Pin 1) | 3.3V or 5V |
-| Data (Pin 2) | GP15 |
-| GND (Pin 4) | GND |
-| **(Optional: 10kΩ pull-up resistor between VCC & Data pin)** | |
+| **DHT22 Pin** | **Raspberry Pi Pico Pin** |
+|---------------|----------------------------|
+| VCC (Pin 1)   | 3.3V or 5V                 |
+| Data (Pin 2)  | GP15 (or GP28 in program)  |
+| GND (Pin 4)   | GND                        |
+| *(Optional)*  | 10kΩ Pull-up Resistor between **VCC & Data** |
 
 ---
 
 ## **PROGRAM (MicroPython)**  
-``` ```
 
----
+```python
+import machine
+import dht
+import time
 
-## **OUTPUT:**  
- 
----
+# Define DHT sensor pin
+dht_pin = machine.Pin(28)
+dht_sensor = dht.DHT22(dht_pin)
 
-  
----
+while True:
+    try:
+        # Measure temperature and humidity
+        dht_sensor.measure()
+        temperature_celsius = dht_sensor.temperature()
+        humidity_percent = dht_sensor.humidity()
 
-## **RESULT:**  
-The **DHT22 sensor** was successfully interfaced with the **Raspberry Pi Pico**, and real-time **temperature and humidity data** were read and displayed. The LEDs responded correctly when the threshold limits were exceeded.
+        # Print results
+        print("Temperature: {:.2f} °C".format(temperature_celsius))
+        print("Humidity: {:.2f} %".format(humidity_percent))
 
----
+    except Exception as e:
+        print("Error reading DHT:", str(e))
 
- 
+    time.sleep(1)  # delay 1 second between readings
+```
+
+## **OUTPUT**  
+
+The **serial monitor** displays the real-time **temperature and humidity** values as shown below:  
+<img width="275" height="319" alt="image" src="https://github.com/user-attachments/assets/4e10993c-41cf-4fc4-bba2-e110dac3c48f" />
+
+
+
+## **RESULT**  
+The **DHT22 sensor** was successfully interfaced with the **Raspberry Pi Pico**, and real-time **temperature & humidity data** were displayed on the serial monitor.  
+Additionally, the system worked as expected, and the **alert mechanism (LED trigger)** can be implemented for threshold crossing events.  
